@@ -162,3 +162,20 @@ def find_targets():
     out = [MaxTarget(enu) for enu in glob.glob(os.path.join(base, "*", "ENU"))]
     out.sort(key=lambda t: -t.year)
     return out
+
+
+def pending(targets=None, skip=()):
+    """Lo que hay que avisar al abrir la app: (sin_puente, desactualizados), solo de los Max compatibles.
+    skip: años de Max en los que la persona dijo «No preguntar más» (los desactualizados se avisan siempre)."""
+    if targets is None:
+        targets = find_targets()
+    missing, old = [], []
+    for t in targets:
+        if not t.supported:
+            continue
+        if not t.installed_version():
+            if t.year not in skip:
+                missing.append(t)
+        elif t.outdated():
+            old.append(t)
+    return missing, old

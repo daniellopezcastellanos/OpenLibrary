@@ -48,7 +48,8 @@ def install(start_menu, desktop, targets, toolbar):
     for t in targets:
         try:
             t.install(toolbar=toolbar)
-            done.append("Puente en %s%s" % (t.label, " con su botón en la barra" if toolbar else ""))
+            bar = t.toolbar_enabled() if toolbar is None else toolbar
+            done.append("Puente en %s%s" % (t.label, " con su botón en la barra" if bar else ""))
         except Exception as exc:
             errors.append("%s: %s" % (t.label, exc))
     return done, errors
@@ -198,7 +199,7 @@ class SetupDialog(QtWidgets.QDialog):
         row = QtWidgets.QHBoxLayout()
         row.addStretch(1)
         b_no = QtWidgets.QPushButton("Ahora no")
-        b_no.clicked.connect(self.reject)
+        b_no.clicked.connect(self._skip)
         b_ok = QtWidgets.QPushButton("Instalar")
         b_ok.setObjectName("Primary")
         b_ok.setDefault(True)
@@ -257,6 +258,24 @@ class SetupDialog(QtWidgets.QDialog):
         self.settings.data["setup_done"] = True
         self.settings.save()
         super(SetupDialog, self).done(r)
+
+    def _skip(self):
+        """«Ahora no» con un Max sin puente: se avisa de que sin él no se puede arrastrar a la escena."""
+        bare = [t for _cb, t in self.max_boxes if not t.installed_version()]
+        if bare:
+            box = QtWidgets.QMessageBox(self)
+            box.setWindowTitle("OpenLibrary")
+            box.setIcon(QtWidgets.QMessageBox.Question)
+            box.setText("Sin el puente no podrás arrastrar modelos ni materiales a %s.\n\n"
+                        "Al abrir OpenLibrary te lo volveré a ofrecer." % ", ".join(t.label for t in bare))
+            b_inst = box.addButton("Instalar", QtWidgets.QMessageBox.AcceptRole)
+            box.addButton("Seguir sin él", QtWidgets.QMessageBox.RejectRole)
+            box.setDefaultButton(b_inst)
+            box.exec()
+            if box.clickedButton() is b_inst:
+                self._install()
+                return
+        self.reject()
 
     def _install(self):
         targets = [t for cb, t in self.max_boxes if cb.isChecked()]

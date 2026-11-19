@@ -2,7 +2,7 @@
 import sys
 
 from . import app_icon, theme
-from .qt import QtCore, QtNetwork, QtWidgets
+from .qt import QtCore, QtGui, QtNetwork, QtWidgets
 
 SINGLE_INSTANCE_KEY = "OpenLibraryApp-single-instance"
 
@@ -110,6 +110,61 @@ def _fix_max_buttons():
             pass
 
 
+def check_bridge(win):
+    """Al abrir: si un 3ds Max compatible no tiene el puente, o lo tiene de otra versión de la app, se dice
+    con un botón para instalarlo o actualizarlo ahí mismo."""
+    from . import bridge_install, ui_setup
+    settings = win.panel.settings
+    skip = set(settings.data.get("bridge_skip") or [])
+    try:
+        missing, old = bridge_install.pending(skip=skip)
+    except Exception:
+        return
+    if not missing and not old:
+        return
+    names = lambda ts: ", ".join(t.label for t in ts)      # noqa: E731
+    parts = []
+    if old:
+        parts.append("El puente de <b>%s</b> es de una versión anterior de OpenLibrary. Actualízalo para "
+                     "que arrastrar a la escena funcione bien." % names(old))
+    if missing:
+        parts.append("<b>%s</b> no tiene el puente instalado: sin él no se puede arrastrar desde "
+                     "OpenLibrary a la escena." % names(missing))
+    box = QtWidgets.QMessageBox(win)
+    box.setWindowTitle("OpenLibrary")
+    box.setIconPixmap(app_icon().pixmap(48, 48))
+    box.setTextFormat(QtCore.Qt.RichText)
+    box.setText("<br><br>".join(parts))
+    b_do = box.addButton("Instalar y actualizar" if old and missing else "Actualizar" if old else "Instalar",
+                         QtWidgets.QMessageBox.AcceptRole)
+    buttons = [b_do, box.addButton("Más tarde", QtWidgets.QMessageBox.RejectRole)]
+    b_never = None
+    if missing:
+        b_never = box.addButton("No volver a preguntar", QtWidgets.QMessageBox.DestructiveRole)
+        buttons.append(b_never)
+    box.setDefaultButton(b_do)
+    for b in buttons:                      # en mayúsculas y en negrita el texto ocupa más de lo que Qt calcula
+        f = b.font()
+        f.setBold(True)
+        b.setMinimumWidth(QtGui.QFontMetrics(f).horizontalAdvance(b.text().upper()) + 40)
+    box.exec()
+    clicked = box.clickedButton()
+    if clicked is b_do:
+        done, errors = [], []
+        for t in old:                      # se conserva la barra que tuviera
+            d, e = ui_setup.install(False, False, [t], None)
+            done += d
+            errors += e
+        if missing:
+            d, e = ui_setup.install(False, False, missing, True)
+            done += d
+            errors += e
+        ui_setup.report(win, done, errors, True)
+    elif b_never is not None and clicked is b_never:
+        settings.data["bridge_skip"] = sorted(skip | {t.year for t in missing})
+        settings.save()
+
+
 def run(argv):
     QtCore.QCoreApplication.setApplicationName("OpenLibrary")
     QtCore.QCoreApplication.setOrganizationName("OpenLibrary")
@@ -139,6 +194,7 @@ def run(argv):
         from . import shortcuts
         QtCore.QTimer.singleShot(3000, lambda: shortcuts.refresh_icons(win.panel.settings))
         QtCore.QTimer.singleShot(2000, _fix_max_buttons)
+        QtCore.QTimer.singleShot(2500, lambda: check_bridge(win))
     if not win.panel.settings.data.get("setup_done"):
         QtCore.QTimer.singleShot(500, win.first_run)
     return app.exec()

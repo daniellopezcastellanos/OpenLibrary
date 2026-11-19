@@ -6,6 +6,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Sin publicar]
 
+## [0.2.1] - 2026-11-19
+
+### Añadido
+- **Aviso del puente al abrir la app**: si un 3ds Max compatible no tiene el puente, o lo tiene de una versión anterior de OpenLibrary, sale un mensaje con un botón para instalarlo o actualizarlo ahí mismo (se conserva la barra que tuvieras). Para un Max en el que no lo quieras, «No volver a preguntar»; de los desactualizados se avisa siempre.
+
+### Cambiado
+- En el asistente de instalación, «Ahora no» ya no se salta el puente sin decir nada: avisa de que sin él no se puede arrastrar a la escena y ofrece instalarlo.
+
 ## [0.2.0] - 2026-11-19
 
 Primera versión publicada, de prueba: OpenLibrary deja de vivir dentro de 3ds Max y pasa a ser una
@@ -154,5 +162,6 @@ Primera versión interna (no se publicó): solo modelos 3D. Aún no se ha probad
 - Botón Añadir: guarda la selección como asset nuevo con su preview.
 - `build.py` para generar el `.mzp` y tests de indexado, detección de motor y ajustes.
 
-[Sin publicar]: https://github.com/daniellopezcastellanos/OpenLibrary/compare/v0.2.0...HEAD
+[Sin publicar]: https://github.com/daniellopezcastellanos/OpenLibrary/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/daniellopezcastellanos/OpenLibrary/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/daniellopezcastellanos/OpenLibrary/releases/tag/v0.2.0

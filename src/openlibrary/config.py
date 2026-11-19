@@ -16,7 +16,7 @@ import os
 import shutil
 
 APP_NAME = "OpenLibrary"
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 
 
 def app_data_dir():

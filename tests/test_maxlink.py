@@ -133,6 +133,18 @@ class BridgeInstallTests(unittest.TestCase):
         self.assertEqual(data["command"], bridge_install.app_command())
         self.assertTrue(data["toolbar"])                  # la barra se conserva
 
+    def test_pending(self):
+        t26, t23 = bridge_install.find_targets()
+        missing, old = bridge_install.pending()
+        self.assertEqual(([t.year for t in missing], old), ([2026], []))   # 2023 no es compatible
+        self.assertEqual(bridge_install.pending(skip={2026}), ([], []))    # «No preguntar más»
+        t26.install()
+        self.assertEqual(bridge_install.pending(), ([], []))
+        with open(os.path.join(t26.bridge, "server.py"), "a", encoding="utf-8") as fh:
+            fh.write("\n# viejo\n")
+        missing, old = bridge_install.pending(skip={2026})
+        self.assertEqual((missing, [t.year for t in old]), ([], [2026]))  # el viejo se avisa siempre
+
     def test_front_pid_trivial(self):
         self.assertEqual(maxlink.front_pid([]), 0)
         self.assertEqual(maxlink.front_pid([4321]), 4321)   # uno solo: ese
