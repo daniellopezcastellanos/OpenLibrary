@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Icono de la app (barra de tareas, accesos directos, .exe), con el lenguaje de las apps Open3D:
+       azulejo oscuro y el glifo a color (los libros de la estantería en ámbar). -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E3036"/>
+      <stop offset="1" stop-color="#141519"/>
+    </linearGradient>
+    <linearGradient id="b1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFCF5C"/>
+      <stop offset="1" stop-color="#E99A12"/>
+    </linearGradient>
+    <linearGradient id="b2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F7A928"/>
+      <stop offset="1" stop-color="#C9710A"/>
+    </linearGradient>
+    <linearGradient id="b3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFE29A"/>
+      <stop offset="1" stop-color="#F2B640"/>
+    </linearGradient>
+    <linearGradient id="b4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E88A1A"/>
+      <stop offset="1" stop-color="#A9560A"/>
+    </linearGradient>
+    <linearGradient id="shelf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F4F4F5"/>
+      <stop offset="1" stop-color="#B9BBC1"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.10"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="drop" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="1.6" stdDeviation="1.4" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#tile)"/>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#gloss)"/>
+  <rect x="2.5" y="2.5" width="59" height="59" rx="13.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <g filter="url(#drop)" transform="translate(32 32) scale(1.06) translate(-32 -33)">
+    <!-- libros -->
+    <rect x="13" y="17" width="7.5" height="28" rx="1.6" fill="url(#b1)"/>
+    <rect x="13" y="21" width="7.5" height="2" fill="#7A3E00" fill-opacity="0.35"/>
+    <rect x="13" y="39" width="7.5" height="2" fill="#7A3E00" fill-opacity="0.35"/>
+    <rect x="22" y="21" width="6.5" height="24" rx="1.5" fill="url(#b2)"/>
+    <rect x="22" y="25" width="6.5" height="1.6" fill="#5A2C00" fill-opacity="0.35"/>
+    <rect x="30" y="14" width="7" height="31" rx="1.6" fill="url(#b3)"/>
+    <rect x="30" y="18.5" width="7" height="2" fill="#8A5200" fill-opacity="0.30"/>
+    <rect x="30" y="38" width="7" height="2" fill="#8A5200" fill-opacity="0.30"/>
+    <!-- el que se apoya -->
+    <rect x="43.5" y="18.5" width="7" height="27" rx="1.6" fill="url(#b4)" transform="rotate(-17 50.5 45.5)"/>
+    <!-- balda -->
+    <rect x="10" y="45" width="44" height="4.2" rx="2.1" fill="url(#shelf)"/>
+  </g>
+</svg>
